@@ -6,6 +6,14 @@ var ytpl = require('ytpl');
 const path = require('path')
 const bodyParser = require('body-parser')
 const sanitize = require('sanitize-filename')
+var util = require('util');
+var log_file = fs.createWriteStream(path.join(__dirname,'debug.log'), {flags : 'w'});
+var log_stdout = process.stdout;
+
+console.log = function(d) { //
+  log_file.write(util.format(d) + '\n');
+  log_stdout.write(util.format(d) + '\n');
+}
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -50,7 +58,7 @@ function downloadPlaylist(format, url) {
 				let fileUrl = file.url
 				let fileName = sanitize(file.title)
 				
-				console.log(`Downloading(${i}/${countTotal}): "+ fileName`)
+				console.log(`Downloading(${i+1}/${countTotal}): "${fileName}`)
 				await saveFile(fileUrl, 'mp3', 'audioonly', fileName)
 			}
 		});
@@ -59,8 +67,11 @@ function downloadPlaylist(format, url) {
 
 async function saveFile(fileUrl, format, filter, fileName) {
 	return new Promise(function(resolve, reject) {
+		var rawConfig = fs.readFileSync(__dirname+'/config.json')
+		const config = JSON.parse(rawConfig)
 		let dateStart = new Date()
-		let stream = fs.createWriteStream(path.join(__dirname,'DownloadedFiles',fileName+'.mp3'))
+		let outPath = config.outPath || path.join(__dirname,'DownloadedFiles')
+		let stream = fs.createWriteStream(path.join(outPath,fileName+'.mp3'))
 		ytdl(fileUrl, {
 			format: format,
 			filter: filter
