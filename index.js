@@ -42,6 +42,7 @@ app.post('/save', (req, res) => {
 		if(playlist) {
 			downloadPlaylist(format, url)
 		} else if(fileName){
+			console.log(`Downloading: ${fileName}`)
 			saveFile(url, 'mp3', 'audioonly', fileName)
 		}
 	}
@@ -67,10 +68,8 @@ function downloadPlaylist(format, url) {
 
 async function saveFile(fileUrl, format, filter, fileName) {
 	return new Promise(function(resolve, reject) {
-		var rawConfig = fs.readFileSync(__dirname+'/config.json')
-		const config = JSON.parse(rawConfig)
 		let dateStart = new Date()
-		let outPath = config.outPath || path.join(__dirname,'DownloadedFiles')
+		let outPath = path.join(__dirname,'DownloadedFiles')
 		let stream = fs.createWriteStream(path.join(outPath,fileName+'.mp3'))
 		ytdl(fileUrl, {
 			format: format,

@@ -15,10 +15,6 @@ btnSetFormatToMp3.addEventListener('click', () => {
 })
 btnSaveMp3File.addEventListener('click', () => {
 	console.log(`URL: ${URLinput.value}`);	
-	save(URLinput.value)
-});
-btnSaveMp3File.addEventListener('click', () => {
-	console.log(`URL: ${URLinput.value}`);	
 	save({
 		url: URLinput.value,
 		format: format,
