@@ -70,15 +70,22 @@ async function saveFile(fileUrl, format, filter, fileName) {
 	return new Promise(function(resolve, reject) {
 		let dateStart = new Date()
 		let outPath = path.join('..','..','storage','music','Musik','DownloadedFiles')
-		let stream = fs.createWriteStream(path.join(outPath,fileName+'.mp3'))
-		ytdl(fileUrl, {
-			format: format,
-			filter: filter
-		}).pipe(stream);
-		stream.on('finish', () => {
-			var time = new Date() - dateStart
-			console.log('finished in '+time+'ms!!!')
-			resolve('finished in '+time+'ms')
-		})
+		// let outPath = path.join(__dirname,'DownloadedFiles')
+		let filePath = path.join(outPath,fileName+'.mp3')
+		if (fs.existsSync(filePath)) {
+			console.log(`${fileName} allready exists`)
+			resolve()
+		} else {
+			let stream = fs.createWriteStream(filePath)
+			ytdl(fileUrl, {
+				format: format,
+				filter: filter
+			}).pipe(stream);
+			stream.on('finish', () => {
+				var time = new Date() - dateStart
+				console.log('finished in '+time+'ms!!!')
+				resolve('finished in '+time+'ms')
+			})
+		}
 	})
 }
