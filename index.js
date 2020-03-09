@@ -38,17 +38,18 @@ app.post('/save', (req, res) => {
 	var format = req.body.format;
 	var playlist = req.body.playlist;
 	var fileName = req.body.fileName;
+	var folder = req.body.folder;
 	if(url) {
 		if(playlist) {
-			downloadPlaylist(format, url)
+			downloadPlaylist(format, url, folder)
 		} else if(fileName){
 			console.log(`Downloading: ${fileName}`)
-			saveFile(url, 'mp3', 'audioonly', fileName)
+			saveFile(url, 'mp3', 'audioonly', fileName, folder)
 		}
 	}
 })
 
-function downloadPlaylist(format, url) {
+function downloadPlaylist(format, url, folder) {
 	if (url) {
 		ytpl(url, async function(err, playlist) {
 		if(err) throw err;
@@ -60,17 +61,25 @@ function downloadPlaylist(format, url) {
 				let fileName = sanitize(file.title)
 				
 				console.log(`Downloading(${i+1}/${countTotal}): "${fileName}`)
-				await saveFile(fileUrl, 'mp3', 'audioonly', fileName)
+				await saveFile(fileUrl, 'mp3', 'audioonly', fileName, folder)
 			}
 		});
 	}
 }
 
-async function saveFile(fileUrl, format, filter, fileName) {
+async function saveFile(fileUrl, format, filter, fileName, folder) {
 	return new Promise(function(resolve, reject) {
+		let outPath = ''
 		let dateStart = new Date()
-		let outPath = path.join('..','..','storage','music','Musik','DownloadedFiles')
-		// let outPath = path.join(__dirname,'DownloadedFiles')
+		if (folder) {
+			outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles',folder)
+			// let outPath = path.join('..','..','storage','music','Musik',folder)
+			if (!fs.existsSync(outPath)){
+				fs.mkdirSync(outPath);
+			}
+		} else {
+		 	outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles')
+		}
 		let filePath = path.join(outPath,fileName+'.mp3')
 		if (fs.existsSync(filePath)) {
 			console.log(`${fileName} allready exists`)

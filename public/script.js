@@ -4,6 +4,7 @@ var btnSetFormatToMp4 = document.getElementById('setFormatToMp4')
 var btnSetFormatToMp3 = document.getElementById('setFormatToMp3')
 var fileNameInput = document.getElementById('fileName')
 var URLinput = document.querySelector('.URL-input');
+var folderInput = document.getElementById('folder')
 var server = 'http://localhost:4000';
 
 var format = 'mp3'
@@ -19,7 +20,8 @@ btnSaveMp3File.addEventListener('click', () => {
 		url: URLinput.value,
 		format: format,
 		playlist: false,
-		fileName: fileNameInput.value
+		fileName: fileNameInput.value,
+		folder: folderInput.value
 	})
 });
 btnSaveMp3Playlist.addEventListener('click', () => {
@@ -28,7 +30,8 @@ btnSaveMp3Playlist.addEventListener('click', () => {
 		url: URLinput.value,
 		format: format,
 		playlist: true,
-		fileName: fileNameInput.value
+		fileName: fileNameInput.value,
+		folder: folderInput.value
 	})
 });
 function save(data) {
