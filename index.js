@@ -69,7 +69,7 @@ function downloadPlaylist(format, url) {
 async function saveFile(fileUrl, format, filter, fileName) {
 	return new Promise(function(resolve, reject) {
 		let dateStart = new Date()
-		let outPath = path.join(__dirname,'DownloadedFiles')
+		let outPath = path.join('..','..','storage','music','Musik','DownloadedFiles')
 		let stream = fs.createWriteStream(path.join(outPath,fileName+'.mp3'))
 		ytdl(fileUrl, {
 			format: format,
