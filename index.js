@@ -20,7 +20,8 @@ app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
-app.use(express.static(path.join(__dirname,'public')));
+app.use('/alt',express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname,'dist')));
 app.listen(4000, () => {
 	console.log('Server Works !!! At port 4000');
 });
@@ -74,9 +75,9 @@ async function saveFile(fileUrl, format, filter, fileName, folder) {
 			let outPath = ''
 			let dateStart = new Date()
 			if (format=== 'mp3') {
-				outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles',folder)
+				outPath = path.join('..','..','storage','music','Musik','DownloadedFiles',folder)
 			} else {
-				outPath = path.join('..','..','storage','dcim', DownloadedFiles',folder)
+				outPath = path.join('..','..','storage','dcim', 'DownloadedFiles',folder)
 			}
 			// outPath = path.join(__dirname,'DownloadedFiles',folder)
 			if (!fs.existsSync(outPath)){
