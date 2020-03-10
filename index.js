@@ -63,7 +63,7 @@ function downloadPlaylist(format, url, folder) {
 				let fileName = sanitize(file.title)
 				
 				console.log(`Downloading(${i+1}/${countTotal}): "${fileName}`)
-				await saveFile(fileUrl, 'mp3', 'audioonly', fileName, folder)
+				await saveFile(fileUrl, format, filter, fileName, folder)
 			}
 		});
 	}
