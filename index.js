@@ -39,12 +39,13 @@ app.post('/save', (req, res) => {
 	var playlist = req.body.playlist;
 	var fileName = req.body.fileName;
 	var folder = req.body.folder;
+	var filter = req.body.filter;
 	if(url) {
 		if(playlist) {
 			downloadPlaylist(format, url, folder)
 		} else if(fileName){
 			console.log(`Downloading: ${fileName}`)
-			saveFile(url, 'mp3', 'audioonly', fileName, folder)
+			saveFile(url, format, filter, fileName, folder)
 		}
 	}
 })
@@ -69,32 +70,36 @@ function downloadPlaylist(format, url, folder) {
 
 async function saveFile(fileUrl, format, filter, fileName, folder) {
 	return new Promise(function(resolve, reject) {
-		let outPath = ''
-		let dateStart = new Date()
-		if (folder) {
-			outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles',folder)
-			// let outPath = path.join('..','..','storage','music','Musik',folder)
+		try {
+			let outPath = ''
+			let dateStart = new Date()
+			if (format=== 'mp3') {
+				outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles',folder)
+			} else {
+				outPath = path.join('..','..','storage','dcim', DownloadedFiles',folder)
+			}
+			// outPath = path.join(__dirname,'DownloadedFiles',folder)
 			if (!fs.existsSync(outPath)){
 				fs.mkdirSync(outPath);
 			}
-		} else {
-		 	outPath = path.join('..','..','storage','music','Musik', 'DownloadedFiles')
-		}
-		let filePath = path.join(outPath,fileName+'.mp3')
-		if (fs.existsSync(filePath)) {
-			console.log(`${fileName} allready exists`)
+			let filePath = path.join(outPath,fileName+'.'+format)
+			if (fs.existsSync(filePath)) {
+				console.log(`${fileName} allready exists`)
+				resolve()
+			} else {
+				let stream = fs.createWriteStream(filePath)
+				ytdl(fileUrl, {
+					format: format,
+					filter: filter
+				}).pipe(stream);
+				stream.on('finish', () => {
+					var time = new Date() - dateStart
+					console.log('finished in '+time+'ms!!!')
+					resolve('finished in '+time+'ms')
+				})
+			}
+		} catch {
 			resolve()
-		} else {
-			let stream = fs.createWriteStream(filePath)
-			ytdl(fileUrl, {
-				format: format,
-				filter: filter
-			}).pipe(stream);
-			stream.on('finish', () => {
-				var time = new Date() - dateStart
-				console.log('finished in '+time+'ms!!!')
-				resolve('finished in '+time+'ms')
-			})
 		}
 	})
 }
