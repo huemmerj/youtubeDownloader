@@ -43,7 +43,7 @@ app.post('/save', (req, res) => {
 	var filter = req.body.filter;
 	if(url) {
 		if(playlist) {
-			downloadPlaylist(format, url, folder)
+			downloadPlaylist(format, url, folder, filter)
 		} else if(fileName){
 			console.log(`Downloading: ${fileName}`)
 			saveFile(url, format, filter, fileName, folder)
@@ -51,7 +51,7 @@ app.post('/save', (req, res) => {
 	}
 })
 
-function downloadPlaylist(format, url, folder) {
+function downloadPlaylist(format, url, folder, filter) {
 	if (url) {
 		ytpl(url, async function(err, playlist) {
 		if(err) throw err;
