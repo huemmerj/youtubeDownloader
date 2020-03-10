@@ -75,9 +75,9 @@ async function saveFile(fileUrl, format, filter, fileName, folder) {
 			let outPath = ''
 			let dateStart = new Date()
 			if (format=== 'mp3') {
-				outPath = path.join('..','..','storage','music','Musik','DownloadedFiles',folder)
+				outPath = path.join('..','..','music','Musik','DownloadedFiles',folder)
 			} else {
-				outPath = path.join('..','..','storage','dcim', 'DownloadedFiles',folder)
+				outPath = path.join('..','..','dcim', 'DownloadedFiles',folder)
 			}
 			// outPath = path.join(__dirname,'DownloadedFiles',folder)
 			if (!fs.existsSync(outPath)){
