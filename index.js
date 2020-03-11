@@ -52,21 +52,26 @@ app.post('/save', (req, res) => {
 })
 
 function downloadPlaylist(format, url, folder, filter) {
-	if (url) {
-		ytpl(url, async function(err, playlist) {
-		if(err) throw err;
-			var i = 0;
-			var countTotal = playlist.items.length
-			for(i; i<countTotal; i++) {
-				let file = playlist.items[i]
-				let fileUrl = file.url
-				let fileName = sanitize(file.title)
-				
-				console.log(`Downloading(${i+1}/${countTotal}): "${fileName}`)
-				await saveFile(fileUrl, format, filter, fileName, folder)
-			}
-		});
-	}
+	try {
+
+		if (url) {
+			ytpl(url, async function(err, playlist) {
+				if(err) throw err;
+				var i = 0;
+				var countTotal = playlist.items.length
+				for(i; i<countTotal; i++) {
+					let file = playlist.items[i]
+					let fileUrl = file.url
+					let fileName = sanitize(file.title)
+					
+					console.log(`Downloading(${i+1}/${countTotal}): "${fileName}`)
+					await saveFile(fileUrl, format, filter, fileName, folder)
+				}
+			});
+		}
+	 } catch {
+		 
+	 }
 }
 
 async function saveFile(fileUrl, format, filter, fileName, folder) {
