@@ -8,12 +8,12 @@ const sanitize = require('sanitize-filename')
 export class Playlist implements IDownloadable{
   id: string
   socket: SocketIO.Socket
-  url: URL
+  url: String
   folder: String
   format: Format
   files: myFile[]
 
-  constructor({socket, url, format, folder}: {socket: SocketIO.Socket, url: URL, format: Format, folder: String }){
+  constructor({socket, url, format, folder}: {socket: SocketIO.Socket, url: String, format: Format, folder: String }){
     this.id = uuidv4()
     this.socket = socket
     this.url = url
@@ -21,6 +21,15 @@ export class Playlist implements IDownloadable{
     this.folder = folder
     this.files = []
     this.setFiles()
+  }
+  public getData():Object {
+    return {
+      id: this.id,
+      url: this.url,
+      folder: this.folder,
+      format: this.format,
+      files: this.files,
+    }
   }
   public async setFiles() {
     if (this.url) {

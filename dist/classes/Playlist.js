@@ -23,6 +23,15 @@ class Playlist {
         this.files = [];
         this.setFiles();
     }
+    getData() {
+        return {
+            id: this.id,
+            url: this.url,
+            folder: this.folder,
+            format: this.format,
+            files: this.files,
+        };
+    }
     setFiles() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.url) {

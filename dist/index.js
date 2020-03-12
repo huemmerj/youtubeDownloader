@@ -19,11 +19,11 @@ io.on('connection', function (socket) {
             console.log(data);
             let playlist = data.playlist;
             if (playlist) {
-                let playlist = new Playlist_1.Playlist(Object.assign(Object.assign({}, socket), data));
+                let playlist = new Playlist_1.Playlist(Object.assign({ socket }, data));
                 playlist.download();
             }
             else {
-                let file = new File_1.myFile(Object.assign(Object.assign({}, socket), data));
+                let file = new File_1.myFile(Object.assign({ socket }, data));
                 file.download();
             }
         }

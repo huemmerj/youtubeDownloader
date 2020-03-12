@@ -1,4 +1,4 @@
 export interface IDownloadable {
-  url: URL
+  url: String
   download()
 }

@@ -19,10 +19,10 @@ io.on('connection', function(socket){
 			console.log(data)
 			let playlist = data.playlist
 			if(playlist) {
-				let playlist = new Playlist({...socket, ...data})
+				let playlist = new Playlist({socket, ...data})
 				playlist.download()
 			} else {
-				let file = new myFile({...socket, ...data})
+				let file = new myFile({socket, ...data})
 				file.download()
 			}
 		} catch {
