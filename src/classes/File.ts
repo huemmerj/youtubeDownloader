@@ -22,7 +22,7 @@ export class myFile implements IDownloadable{
     }
   }
   get filePath(): String {
-    return Path.join(this.fullPath, this.title)
+    return Path.join(this.fullPath, this.title, this.format)
   }
   get fullPath(): String {
     return Path.join(this.outPath, this.folder)
@@ -33,7 +33,7 @@ export class myFile implements IDownloadable{
     this.socket = socket
     this.playlistId = playlistId
     if(!title || !format || !url) {
-      this.status = Status.Error
+      this.status = Status.ERROR
       this.socket.emit('downloadFile', this.getData())
       return
     }
@@ -61,6 +61,11 @@ export class myFile implements IDownloadable{
         this.socket.emit('downloadFile', this.getData())
         if(!fs.existsSync(this.fullPath)) {
           fs.mkdirSync(this.fullPath)
+        }
+        if(fs.existsSync(this.filePath)) {
+          this.status = Status.SUCCESS
+          this.socket.emit('downloadFile', this.getData())
+          return
         }
         let stream = fs.createWriteStream(this.filePath)
         await ytdl(this.url, {

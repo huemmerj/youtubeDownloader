@@ -23,7 +23,7 @@ class myFile {
         this.socket = socket;
         this.playlistId = playlistId;
         if (!title || !format || !url) {
-            this.status = Status_1.Status.Error;
+            this.status = Status_1.Status.ERROR;
             this.socket.emit('downloadFile', this.getData());
             return;
         }
@@ -38,7 +38,7 @@ class myFile {
         }
     }
     get filePath() {
-        return Path.join(this.fullPath, this.title);
+        return Path.join(this.fullPath, this.title, this.format);
     }
     get fullPath() {
         return Path.join(this.outPath, this.folder);
@@ -62,6 +62,11 @@ class myFile {
                     this.socket.emit('downloadFile', this.getData());
                     if (!fs.existsSync(this.fullPath)) {
                         fs.mkdirSync(this.fullPath);
+                    }
+                    if (fs.existsSync(this.filePath)) {
+                        this.status = Status_1.Status.SUCCESS;
+                        this.socket.emit('downloadFile', this.getData());
+                        return;
                     }
                     let stream = fs.createWriteStream(this.filePath);
                     yield ytdl(this.url, {

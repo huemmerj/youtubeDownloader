@@ -11,15 +11,17 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Content-Type", "application/x-www-form-urlencoded")
 	next();
 });
-io.on('connection', function(socket){
-	socket.on('download', (data) => {
+io.on('connection', async function(socket){
+	socket.on('download', async (data) => {
 		try {
 			console.log(data)
 			let playlist = data.playlist
 			if(playlist) {
 				let playlist = new Playlist({socket, ...data})
+				await playlist.setFiles()
 				playlist.download()
 			} else {
 				let file = new myFile({socket, ...data})

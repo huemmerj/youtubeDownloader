@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const File_1 = require("./File");
 const uuid_1 = require("uuid");
+const Status_1 = require("./Status");
 const ytpl = require('ytpl');
 const sanitize = require('sanitize-filename');
 class Playlist {
@@ -21,7 +22,6 @@ class Playlist {
         this.format = format;
         this.folder = folder;
         this.files = [];
-        this.setFiles();
     }
     getData() {
         return {
@@ -29,39 +29,48 @@ class Playlist {
             url: this.url,
             folder: this.folder,
             format: this.format,
-            files: this.files,
+            files: this.getFiles(),
         };
+    }
+    getFiles() {
+        return this.files.map((file) => {
+            return file.getData();
+        });
     }
     setFiles() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.url) {
-                yield ytpl(this.url, (err, playlist) => __awaiter(this, void 0, void 0, function* () {
-                    if (err)
-                        throw err;
-                    for (let file of playlist) {
-                        this.files.push(new File_1.myFile({
-                            socket: this.socket,
-                            url: file.url,
-                            title: sanitize(file.title),
-                            format: this.format,
-                            folder: this.folder,
-                            playlistId: this.id,
-                        }));
-                    }
-                }));
-            }
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                if (this.url) {
+                    yield ytpl(this.url, (err, playlist) => __awaiter(this, void 0, void 0, function* () {
+                        if (err)
+                            throw err;
+                        for (let file of playlist.items) {
+                            this.files.push(new File_1.myFile({
+                                socket: this.socket,
+                                url: file.url,
+                                title: sanitize(file.title),
+                                format: this.format,
+                                folder: this.folder,
+                                playlistId: this.id,
+                            }));
+                        }
+                        resolve();
+                    }));
+                }
+            }));
         });
     }
     download() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                this.socket.emit('downloadPlaylist', this);
+                this.socket.emit('downloadPlaylist', this.getData());
                 for (let file of this.files) {
                     yield file.download();
                 }
             }
             catch (e) {
-                this.socket.emit('error', this);
+                this.status = Status_1.Status.ERROR;
+                this.socket.emit('downloadPlaylist', this.getData());
             }
         });
     }
