@@ -33,4 +33,6 @@ io.on('connection', async function(socket){
 	})
 });
 
-http.listen(4000)
+http.listen(4000, ()=> {
+	console.log("server runs on Port 4000")
+})

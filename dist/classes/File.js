@@ -38,7 +38,7 @@ class myFile {
         }
     }
     get filePath() {
-        return Path.join(this.fullPath, this.title, this.format);
+        return Path.join(this.fullPath, this.title + '.' + this.format);
     }
     get fullPath() {
         return Path.join(this.outPath, this.folder);

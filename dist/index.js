@@ -45,5 +45,7 @@ io.on('connection', function (socket) {
         }));
     });
 });
-http.listen(4000);
+http.listen(4000, () => {
+    console.log("server runs on Port 4000");
+});
 //# sourceMappingURL=index.js.map
