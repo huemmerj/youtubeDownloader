@@ -22,6 +22,7 @@ class myFile {
         this.id = uuid_1.v4();
         this.socket = socket;
         this.playlistId = playlistId;
+        this.status = Status_1.Status.WAITING;
         if (!title || !format || !url) {
             this.status = Status_1.Status.ERROR;
             this.socket.emit('downloadFile', this.getData());
@@ -51,6 +52,8 @@ class myFile {
             format: this.format,
             folder: this.folder,
             status: this.status,
+            playlistId: this.playlistId,
+            time: this.time,
         };
     }
     download() {
@@ -77,6 +80,7 @@ class myFile {
                         // @ts-ignore
                         var time = new Date() - dateStart;
                         this.status = Status_1.Status.SUCCESS;
+                        this.time = time;
                         this.socket.emit('downloadFile', this.getData());
                         console.log('finished in ' + time + 'ms!!!');
                         resolve();

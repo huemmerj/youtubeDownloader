@@ -8,6 +8,7 @@ const ytpl = require('ytpl');
 const sanitize = require('sanitize-filename')
 export class Playlist implements IDownloadable{
   id: string
+  title: string
   socket: SocketIO.Socket
   url: String
   folder: String
@@ -26,6 +27,7 @@ export class Playlist implements IDownloadable{
   public getData():Object {
     return {
       id: this.id,
+      title: this.title,
       url: this.url,
       folder: this.folder,
       format: this.format,
@@ -42,6 +44,7 @@ export class Playlist implements IDownloadable{
       if (this.url) {
         await ytpl(this.url, async (err, playlist)=>{
           if(err) throw err
+          this.title = playlist.title
           for(let file of playlist.items) {
             this.files.push(new myFile({
               socket: this.socket,

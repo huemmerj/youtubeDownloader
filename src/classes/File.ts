@@ -16,6 +16,7 @@ export class myFile implements IDownloadable{
   format: String
   outPath: String = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles')
   status: Status
+  time: number
   get filter(): String {
     if (this.format === Format.MP3) {
       return Filter.MP3
@@ -32,6 +33,7 @@ export class myFile implements IDownloadable{
     this.id = uuidv4()
     this.socket = socket
     this.playlistId = playlistId
+    this.status = Status.WAITING
     if(!title || !format || !url) {
       this.status = Status.ERROR
       this.socket.emit('downloadFile', this.getData())
@@ -51,6 +53,8 @@ export class myFile implements IDownloadable{
       format: this.format,
       folder: this.folder,
       status: this.status,
+      playlistId: this.playlistId,
+      time: this.time,
     }
   }
   public async download(): Promise<any> {
@@ -76,6 +80,7 @@ export class myFile implements IDownloadable{
           // @ts-ignore
           var time = new Date() - dateStart
           this.status = Status.SUCCESS
+          this.time = time
           this.socket.emit('downloadFile', this.getData())
           console.log('finished in '+time+'ms!!!')
           resolve()

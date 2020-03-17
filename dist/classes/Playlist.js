@@ -26,6 +26,7 @@ class Playlist {
     getData() {
         return {
             id: this.id,
+            title: this.title,
             url: this.url,
             folder: this.folder,
             format: this.format,
@@ -44,6 +45,7 @@ class Playlist {
                     yield ytpl(this.url, (err, playlist) => __awaiter(this, void 0, void 0, function* () {
                         if (err)
                             throw err;
+                        this.title = playlist.title;
                         for (let file of playlist.items) {
                             this.files.push(new File_1.myFile({
                                 socket: this.socket,

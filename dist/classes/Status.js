@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Status;
 (function (Status) {
+    Status[Status["WAITING"] = 0] = "WAITING";
     Status[Status["DOWNLOADING"] = 1] = "DOWNLOADING";
     Status[Status["SUCCESS"] = 2] = "SUCCESS";
     Status[Status["ERROR"] = 3] = "ERROR";
