@@ -14,8 +14,8 @@ export class myFile implements IDownloadable{
   folder: String
   playlistId: String
   format: String
-  // outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
-  outPath: String = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles')
+  outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
+  // outPath: String = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles')
   status: Status
   time: number
   get filter(): String {
