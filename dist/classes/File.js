@@ -18,7 +18,8 @@ const fs = require('fs');
 const ytdl = require('ytdl-core');
 class myFile {
     constructor({ socket, url, title, format, folder, playlistId }) {
-        this.outPath = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles');
+        // outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
+        this.outPath = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles');
         this.id = uuid_1.v4();
         this.socket = socket;
         this.playlistId = playlistId;
@@ -69,22 +70,24 @@ class myFile {
                     if (fs.existsSync(this.filePath)) {
                         this.status = Status_1.Status.SUCCESS;
                         this.socket.emit('downloadFile', this.getData());
-                        return;
-                    }
-                    let stream = fs.createWriteStream(this.filePath);
-                    yield ytdl(this.url, {
-                        format: this.format,
-                        filter: this.filter
-                    }).pipe(stream);
-                    stream.on('finish', () => {
-                        // @ts-ignore
-                        var time = new Date() - dateStart;
-                        this.status = Status_1.Status.SUCCESS;
-                        this.time = time;
-                        this.socket.emit('downloadFile', this.getData());
-                        console.log('finished in ' + time + 'ms!!!');
                         resolve();
-                    });
+                    }
+                    else {
+                        let stream = fs.createWriteStream(this.filePath);
+                        yield ytdl(this.url, {
+                            format: this.format,
+                            filter: this.filter
+                        }).pipe(stream);
+                        stream.on('finish', () => {
+                            // @ts-ignore
+                            var time = new Date() - dateStart;
+                            this.status = Status_1.Status.SUCCESS;
+                            this.time = time;
+                            this.socket.emit('downloadFile', this.getData());
+                            console.log('finished in ' + time + 'ms!!!');
+                            resolve();
+                        });
+                    }
                 }
                 catch (e) {
                     this.socket.emit('error', this.getData());

@@ -14,7 +14,8 @@ export class myFile implements IDownloadable{
   folder: String
   playlistId: String
   format: String
-  outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
+  // outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
+  outPath: String = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles')
   status: Status
   time: number
   get filter(): String {
@@ -69,22 +70,23 @@ export class myFile implements IDownloadable{
         if(fs.existsSync(this.filePath)) {
           this.status = Status.SUCCESS
           this.socket.emit('downloadFile', this.getData())
-          return
-        }
-        let stream = fs.createWriteStream(this.filePath)
-        await ytdl(this.url, {
-          format: this.format,
-          filter: this.filter
-        }).pipe(stream);
-        stream.on('finish', () => {
-          // @ts-ignore
-          var time = new Date() - dateStart
-          this.status = Status.SUCCESS
-          this.time = time
-          this.socket.emit('downloadFile', this.getData())
-          console.log('finished in '+time+'ms!!!')
           resolve()
-        })
+        } else {
+          let stream = fs.createWriteStream(this.filePath)
+          await ytdl(this.url, {
+            format: this.format,
+            filter: this.filter
+          }).pipe(stream);
+          stream.on('finish', () => {
+            // @ts-ignore
+            var time = new Date() - dateStart
+            this.status = Status.SUCCESS
+            this.time = time
+            this.socket.emit('downloadFile', this.getData())
+            console.log('finished in '+time+'ms!!!')
+            resolve()
+          })
+        }
       } catch (e) {
         this.socket.emit('error', this.getData())
         reject()
