@@ -18,7 +18,7 @@ const fs = require('fs');
 const ytdl = require('ytdl-core');
 class myFile {
     constructor({ socket, url, title, format, folder, playlistId }) {
-        this.outPath = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles');
+        this.outPath = Path.join('../../../../storage/music/Musik/DownloadedFiles');
         this.id = uuid_1.v4();
         this.socket = socket;
         this.playlistId = playlistId;
