@@ -14,7 +14,7 @@ export class myFile implements IDownloadable{
   folder: String
   playlistId: String
   format: String
-  outPath: String = Path.join('../../../../storage/music/Musik/DownloadedFiles')
+  outPath: String = Path.join('../../../storage/music/Musik/DownloadedFiles')
   status: Status
   time: number
   get filter(): String {
