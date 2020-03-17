@@ -1,6 +1,7 @@
 import { Playlist } from "./classes/Playlist";
 import { myFile } from "./classes/File";
 
+const path = require('path')
 const express = require('express');
 const app = express();
 var http = require('http').createServer(app);
@@ -14,6 +15,7 @@ app.use(function(req, res, next) {
 	res.header("Content-Type", "application/x-www-form-urlencoded")
 	next();
 });
+app.use(express.static(path.join(__dirname, 'dist')))
 io.on('connection', async function(socket){
 	socket.on('download', async (data) => {
 		try {
