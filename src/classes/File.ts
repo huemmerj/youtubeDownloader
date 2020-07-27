@@ -15,7 +15,7 @@ export class myFile implements IDownloadable{
   playlistId: String
   format: String
   outPath: String = Path.join('/data/data/com.termux/files/home/storage/music/Musik/DownloadedFiles')
-  // outPath: String = Path.join('C:\\Users\\j.huemmer\\private\\programming\\ytDownloader2\\youtubeDownloader-master\\youtubeDownloader\\DownloadedFiles')
+  //outPath: String = Path.join('/home/jens/projekte/youtubeDownloader/DownloadedFiles')
   status: Status
   time: number
   get filter(): String {
@@ -37,7 +37,7 @@ export class myFile implements IDownloadable{
     this.status = Status.WAITING
     if(!title || !format || !url) {
       this.status = Status.ERROR
-      this.socket.emit('downloadFile', this.getData())
+      this.socket.broadcast.emit('downloadFile', this.getData())
       return
     }
     this.title = title
@@ -63,13 +63,13 @@ export class myFile implements IDownloadable{
       try {
         let dateStart = new Date()
         this.status = Status.DOWNLOADING
-        this.socket.emit('downloadFile', this.getData())
+        this.socket.broadcast.emit('downloadFile', this.getData())
         if(!fs.existsSync(this.fullPath)) {
           fs.mkdirSync(this.fullPath)
         }
         if(fs.existsSync(this.filePath)) {
           this.status = Status.SUCCESS
-          this.socket.emit('downloadFile', this.getData())
+          this.socket.broadcast.emit('downloadFile', this.getData())
           resolve()
         } else {
           let stream = fs.createWriteStream(this.filePath)
@@ -82,13 +82,13 @@ export class myFile implements IDownloadable{
             var time = new Date() - dateStart
             this.status = Status.SUCCESS
             this.time = time
-            this.socket.emit('downloadFile', this.getData())
+            this.socket.broadcast.emit('downloadFile', this.getData())
             console.log('finished in '+time+'ms!!!')
             resolve()
           })
         }
       } catch (e) {
-        this.socket.emit('error', this.getData())
+        this.socket.broadcast.emit('error', this.getData())
         reject()
       }
     })

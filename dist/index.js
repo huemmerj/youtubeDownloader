@@ -17,6 +17,7 @@ const app = express();
 var http = require('http').createServer(app);
 const bodyParser = require('body-parser');
 var io = require('socket.io')(http);
+var playlists = [];
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -27,12 +28,16 @@ app.use(function (req, res, next) {
 app.use(express.static(path.join(__dirname, 'dist')));
 io.on('connection', function (socket) {
     return __awaiter(this, void 0, void 0, function* () {
+        for (const playlist of playlists) {
+            socket.emit('downloadPlaylist', playlist.getData());
+        }
         socket.on('download', (data) => __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log(data);
                 let playlist = data.playlist;
                 if (playlist) {
                     let playlist = new Playlist_1.Playlist(Object.assign({ socket }, data));
+                    playlists.push(playlist);
                     yield playlist.setFiles();
                     playlist.download();
                 }

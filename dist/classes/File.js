@@ -25,7 +25,7 @@ class myFile {
         this.status = Status_1.Status.WAITING;
         if (!title || !format || !url) {
             this.status = Status_1.Status.ERROR;
-            this.socket.emit('downloadFile', this.getData());
+            this.socket.broadcast.emit('downloadFile', this.getData());
             return;
         }
         this.title = title;
@@ -62,13 +62,13 @@ class myFile {
                 try {
                     let dateStart = new Date();
                     this.status = Status_1.Status.DOWNLOADING;
-                    this.socket.emit('downloadFile', this.getData());
+                    this.socket.broadcast.emit('downloadFile', this.getData());
                     if (!fs.existsSync(this.fullPath)) {
                         fs.mkdirSync(this.fullPath);
                     }
                     if (fs.existsSync(this.filePath)) {
                         this.status = Status_1.Status.SUCCESS;
-                        this.socket.emit('downloadFile', this.getData());
+                        this.socket.broadcast.emit('downloadFile', this.getData());
                         resolve();
                     }
                     else {
@@ -82,14 +82,14 @@ class myFile {
                             var time = new Date() - dateStart;
                             this.status = Status_1.Status.SUCCESS;
                             this.time = time;
-                            this.socket.emit('downloadFile', this.getData());
+                            this.socket.broadcast.emit('downloadFile', this.getData());
                             console.log('finished in ' + time + 'ms!!!');
                             resolve();
                         });
                     }
                 }
                 catch (e) {
-                    this.socket.emit('error', this.getData());
+                    this.socket.broadcast.emit('error', this.getData());
                     reject();
                 }
             }));

@@ -4,7 +4,8 @@ import { myFile } from "./File"
 import { IDownloadable } from "./IDownloadable";
 import { v4 as uuidv4 } from 'uuid';
 import { Status } from "./Status";
-const ytpl = require('ytpl');
+const ytlist = require('youtube-playlist');
+
 const sanitize = require('sanitize-filename')
 export class Playlist implements IDownloadable{
   id: string
@@ -42,14 +43,13 @@ export class Playlist implements IDownloadable{
   public async setFiles() {
     return new Promise(async (resolve, reject) => {
       if (this.url) {
-        await ytpl(this.url, async (err, playlist)=>{
-          if(err) throw err
-          this.title = playlist.title
-          for(let file of playlist.items) {
+        ytlist(this.url, ['id', 'name', 'url']).then(res => {
+          this.title = res.data.name
+          for(let file of res.data.playlist) {
             this.files.push(new myFile({
               socket: this.socket,
               url: file.url,
-              title: sanitize(file.title),
+              title: sanitize(file.name),
               format: this.format,
               folder: this.folder,
               playlistId: this.id,
@@ -62,13 +62,13 @@ export class Playlist implements IDownloadable{
   }
   public async download() {
     try {
-      this.socket.emit('downloadPlaylist', this.getData())
+      this.socket.broadcast.emit('downloadPlaylist', this.getData())
       for(let file of this.files) {
         await file.download()
       }
     } catch (e) {
       this.status = Status.ERROR
-      this.socket.emit('downloadPlaylist', this.getData())
+      this.socket.broadcast.emit('downloadPlaylist', this.getData())
     }
   }
 }
